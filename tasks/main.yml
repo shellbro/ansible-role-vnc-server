@@ -23,7 +23,7 @@
     regexp: "^PIDFile="
     line: "PIDFile=/home/{{ user }}/.vnc/%H%i.pid"
   become: yes
-# - name: set password
+# - name: set password (vncpasswd)
 #
 #
 - name: start VNC service
