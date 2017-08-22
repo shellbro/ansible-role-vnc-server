@@ -6,12 +6,13 @@ Ansible role that sets up VNC server on CentOS 7.
 Requirements
 ------------
 
-None
+Ansible version >= 2.3
 
 Role Variables
 --------------
 
-None
+- user - user name used to start a VNC server
+- display - display number (by default :1)
 
 Dependencies
 ------------
@@ -23,7 +24,9 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - shellbro.vnc-server
+         - name: shellbro.vnc-server
+		   user: shellbro
+		   display: :5
 
 License
 -------

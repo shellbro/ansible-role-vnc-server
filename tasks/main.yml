@@ -1,2 +1,35 @@
 ---
-# tasks file for ansible-role-vnc-server
+- name: install TigerVNC server
+  yum:
+    name: tigervnc-server
+    state: present
+  become: yes
+- name: copy configuration file
+  copy:
+    src: /usr/lib/systemd/system/vncserver@.service
+    dest: "/etc/systemd/system/vncserver-{{ user }}@.service"
+    remote_src: yes
+    force: no
+  become: yes
+- name: configure ExecStart for provided user
+  lineinfile:
+    path: "/etc/systemd/system/vncserver-{{ user }}@.service"
+    regexp: "^ExecStart="
+    line: "ExecStart=/usr/sbin/runuser -l {{ user }} -c \"/usr/bin/vncserver %i\""
+  become: yes
+- name: configure PIDFile for provided user
+  lineinfile:
+    path: "/etc/systemd/system/vncserver-{{ user }}@.service"
+    regexp: "^PIDFile="
+    line: "PIDFile=/home/{{ user }}/.vnc/%H%i.pid"
+  become: yes
+# - name: set password
+#
+#
+- name: start VNC service
+  systemd:
+    name: "vncserver-{{ user }}@{{ display }}"
+    daemon_reload: yes
+    state: started
+    enabled: yes
+  become: yes
