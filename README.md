@@ -24,9 +24,9 @@ Example Playbook
 
     - hosts: servers
       roles:
-         - name: shellbro.vnc-server
-		   user: shellbro
-		   display: :5
+      - name: shellbro.vnc-server
+        user: shellbro
+        display: :5
 
 License
 -------
