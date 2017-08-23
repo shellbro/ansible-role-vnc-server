@@ -33,3 +33,9 @@
     state: started
     enabled: yes
   become: yes
+- name: "fix popup: 'Authentication is required to set the network proxy used for downloading packages'"
+  lineinfile:
+    path: /etc/xdg/autostart/gnome-software-service.desktop
+    line: X-GNOME-Autostart-enabled=false
+  notify: restart VNC service
+  become: yes

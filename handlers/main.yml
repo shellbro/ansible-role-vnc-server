@@ -1,3 +1,6 @@
 ---
-
-
+- name: restart VNC service
+  service:
+    name: "vncserver-{{ user}}@{{display}}"
+    state: restarted
+  become: yes
