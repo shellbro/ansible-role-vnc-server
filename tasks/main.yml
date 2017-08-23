@@ -33,6 +33,13 @@
     state: started
     enabled: yes
   become: yes
+- name: start GNOME 3 (not classic) session by default
+  lineinfile:
+    path: "/home/{{ user }}/.vnc/xstartup"
+    regexp: "^exec "
+    line: exec gnome-session
+  notify: restart VNC service
+  become: yes
 - name: "fix popup: 'Authentication is required to set the network proxy used for downloading packages'"
   lineinfile:
     path: /etc/xdg/autostart/gnome-software-service.desktop
