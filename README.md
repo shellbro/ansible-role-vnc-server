@@ -12,7 +12,7 @@ Role Variables
 --------------
 
 - user - user name used to start a VNC server
-- display - display number (by default :1)
+- display - display number (by default :2)
 
 Dependencies
 ------------
