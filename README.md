@@ -1,5 +1,5 @@
 vnc-server
-=========
+==========
 
 Ansible role that sets up VNC server on CentOS 7.
 
