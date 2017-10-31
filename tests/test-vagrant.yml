@@ -1,5 +1,5 @@
 ---
 - hosts: all
   roles:
-    - name: shellbro.vnc-server
+    - role: shellbro.vnc-server
       user: vagrant
