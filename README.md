@@ -6,7 +6,7 @@ Ansible role that sets up VNC server on CentOS 7.
 Requirements
 ------------
 
-Ansible version >= 2.3
+Ansible version >= 2.3.
 
 Role Variables
 --------------
