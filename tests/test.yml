@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
-  remote_user: root
+- hosts: all
   roles:
-    - ansible-role-vnc-server
+    - role: shellbro.vnc-server
+      user: vagrant

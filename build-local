@@ -1,0 +1,6 @@
+#!/bin/bash
+
+vagrant destroy -f
+vagrant up
+vagrant provision
+vagrant halt

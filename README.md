@@ -1,6 +1,8 @@
 vnc-server
 ==========
 
+[![Build Status](https://travis-ci.org/shellbro/ansible-role-vnc-server.svg?branch=master)](https://travis-ci.org/shellbro/ansible-role-vnc-server)
+
 Ansible role that sets up VNC server on CentOS 7.
 
 Requirements
