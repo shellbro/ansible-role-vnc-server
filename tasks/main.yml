@@ -7,40 +7,40 @@
 - name: copy configuration file
   copy:
     src: /usr/lib/systemd/system/vncserver@.service
-    dest: "/etc/systemd/system/vncserver-{{ user }}@.service"
+    dest: /etc/systemd/system/vncserver-{{ user }}@.service
     remote_src: yes
     force: no
   become: yes
 - name: configure ExecStart for provided user
   lineinfile:
-    path: "/etc/systemd/system/vncserver-{{ user }}@.service"
-    regexp: "^ExecStart="
-    line: "ExecStart=/usr/sbin/runuser -l {{ user }} -c \"/usr/bin/vncserver %i\""
+    path: /etc/systemd/system/vncserver-{{ user }}@.service
+    regexp: ^ExecStart=
+    line: ExecStart=/usr/sbin/runuser -l {{ user }} -c "/usr/bin/vncserver %i"
   become: yes
 - name: configure PIDFile for provided user
   lineinfile:
-    path: "/etc/systemd/system/vncserver-{{ user }}@.service"
-    regexp: "^PIDFile="
-    line: "PIDFile=/home/{{ user }}/.vnc/%H%i.pid"
+    path: /etc/systemd/system/vncserver-{{ user }}@.service
+    regexp: ^PIDFile=
+    line: PIDFile=/home/{{ user }}/.vnc/%H%i.pid
   become: yes
 # - name: set password (vncpasswd)
 #
 #
 - name: start VNC service
   systemd:
-    name: "vncserver-{{ user }}@{{ display }}"
+    name: vncserver-{{ user }}@{{ display }}
     daemon_reload: yes
     state: started
     enabled: yes
   become: yes
 - name: start GNOME 3 (not classic) session by default
   lineinfile:
-    path: "/home/{{ user }}/.vnc/xstartup"
-    regexp: "^exec "
+    path: /home/{{ user }}/.vnc/xstartup
+    regexp: ^exec 
     line: exec gnome-session
   notify: restart VNC service
   become: yes
-- name: "fix popup: 'Authentication is required to set the network proxy used for downloading packages'"
+- name: 'fix popup: "Authentication is required to set the network proxy used for downloading packages"'
   lineinfile:
     path: /etc/xdg/autostart/gnome-software-service.desktop
     line: X-GNOME-Autostart-enabled=false
