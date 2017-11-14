@@ -26,7 +26,7 @@
 # - name: set password (vncpasswd)
 #
 #
-- name: start VNC service
+- name: start and enable VNC service
   systemd:
     name: vncserver-{{ user }}@{{ display }}
     daemon_reload: yes
