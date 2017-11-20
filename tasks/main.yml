@@ -10,7 +10,6 @@
     dest: /etc/systemd/system/vncserver-{{ user }}@.service
     remote_src: yes
     force: no
-  notify: restart VNC service
   become: yes
 - name: configure ExecStart for a given user
   lineinfile:
