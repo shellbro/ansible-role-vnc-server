@@ -10,18 +10,21 @@
     dest: /etc/systemd/system/vncserver-{{ user }}@.service
     remote_src: yes
     force: no
+  notify: restart VNC service
   become: yes
 - name: configure ExecStart for a given user
   lineinfile:
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^ExecStart=
     line: ExecStart=/usr/sbin/runuser -l {{ user }} -c "/usr/bin/vncserver %i"
+  notify: restart VNC service
   become: yes
 - name: configure PIDFile for a given user
   lineinfile:
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^PIDFile=
     line: PIDFile=/home/{{ user }}/.vnc/%H%i.pid
+  notify: restart VNC service
   become: yes
 - name: check if VNC password is already set
   stat:
