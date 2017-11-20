@@ -3,3 +3,5 @@
   roles:
     - role: shellbro.vnc-server
       user: vagrant
+      password: vncpassword
+      display: 3

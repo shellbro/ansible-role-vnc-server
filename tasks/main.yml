@@ -11,21 +11,44 @@
     remote_src: yes
     force: no
   become: yes
-- name: configure ExecStart for provided user
+- name: configure ExecStart for a given user
   lineinfile:
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^ExecStart=
     line: ExecStart=/usr/sbin/runuser -l {{ user }} -c "/usr/bin/vncserver %i"
   become: yes
-- name: configure PIDFile for provided user
+- name: configure PIDFile for a given user
   lineinfile:
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^PIDFile=
     line: PIDFile=/home/{{ user }}/.vnc/%H%i.pid
   become: yes
-# - name: set password (vncpasswd)
-#
-#
+- name: check if VNC password is already set
+  stat:
+    path: /home/{{ user }}/.vnc/passwd
+  register: vnc_passwd_file
+  become: yes
+- name: create .vnc directory
+  file:
+    path: /home/{{ user }}/.vnc
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0755
+  when: vnc_passwd_file.stat.exists == false
+  become: yes
+- name: set default VNC password
+  shell: echo {{ password }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
+  when: vnc_passwd_file.stat.exists == false
+  become: yes
+- name: set correct permissions for VNC passwd file
+  file:
+    path: /home/{{ user }}/.vnc/passwd
+    owner: "{{ user }}"
+    group: "{{ user }}"
+    mode: 0600
+  when: vnc_passwd_file.stat.exists == false
+  become: yes
 - name: start and enable VNC service
   systemd:
     name: vncserver-{{ user }}@{{ display }}

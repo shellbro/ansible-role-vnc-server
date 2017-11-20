@@ -13,7 +13,8 @@ Ansible version >= 2.3.
 Role Variables
 --------------
 
-- user - user name used to start a VNC server
+- user - username to start a VNC server
+- password - default password (by default `password`)
 - display - display number (by default :2)
 
 Dependencies
@@ -28,7 +29,8 @@ Example Playbook
       roles:
       - role: shellbro.vnc-server
         user: shellbro
-        display: :5
+        password: vncpassword
+        display: :3
 
 License
 -------
