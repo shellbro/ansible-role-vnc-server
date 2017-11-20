@@ -11,18 +11,25 @@
     remote_src: yes
     force: no
   become: yes
-- name: configure ExecStart for a given user
+- name: configure ExecStart
   lineinfile:
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^ExecStart=
     line: ExecStart=/usr/sbin/runuser -l {{ user }} -c "/usr/bin/vncserver %i"
   notify: restart VNC service
   become: yes
-- name: configure PIDFile for a given user
+- name: configure PIDFile
   lineinfile:
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^PIDFile=
     line: PIDFile=/home/{{ user }}/.vnc/%H%i.pid
+  notify: restart VNC service
+  become: yes
+- name: remove service user directive which sometimes seems to be present
+  lineinfile:
+    path: /etc/systemd/system/vncserver-{{ user }}@.service
+    state: absent
+    regexp: ^User=
   notify: restart VNC service
   become: yes
 - name: check if VNC password is already set
@@ -37,7 +44,7 @@
     owner: "{{ user }}"
     group: "{{ user }}"
     mode: 0755
-  when: vnc_passwd_file.stat.exists == false
+  when: not vnc_passwd_file.stat.exists
   become: yes
 - name: set default VNC password
   shell: echo {{ password }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
@@ -65,9 +72,14 @@
     line: exec gnome-session
   notify: restart VNC service
   become: yes
+- name: check if autostart file exists
+  stat:
+    path: /etc/xdg/autostart/gnome-software-service.desktop
+  register: autostart_file
 - name: 'fix popup: "Authentication is required to set the network proxy used for downloading packages"'
   lineinfile:
     path: /etc/xdg/autostart/gnome-software-service.desktop
     line: X-GNOME-Autostart-enabled=false
   notify: restart VNC service
+  when: autostart_file.stat.exists
   become: yes
