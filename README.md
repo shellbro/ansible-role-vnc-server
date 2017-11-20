@@ -13,7 +13,7 @@ Ansible version >= 2.3.
 Role Variables
 --------------
 
-- user - username to start a VNC server
+- user - user to start a VNC server
 - password - default password (by default `password`)
 - display - display number (by default :2)
 
