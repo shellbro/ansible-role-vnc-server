@@ -1,0 +1,14 @@
+sudo: required
+
+env:
+  - distribution: centos
+    version: 7
+
+services:
+  - docker
+
+before_install:
+  - 'sudo docker pull ${distribution}:${version}'
+
+script:
+  - container_id=$(mktemp)
