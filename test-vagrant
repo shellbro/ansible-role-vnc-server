@@ -1,6 +1,10 @@
-#!/usr/bin/env bash
+#!/usr/bin/bash
+#
+# Test Ansible role with Vagrant
 
-vagrant destroy -f
-vagrant up
-vagrant provision
-vagrant halt
+set -o errexit
+
+/usr/bin/vagrant destroy -f
+/usr/bin/vagrant up
+/usr/bin/vagrant provision
+/usr/bin/vagrant halt
