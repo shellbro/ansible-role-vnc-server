@@ -1,85 +1,105 @@
 ---
-- name: install TigerVNC server
+- name: Install TigerVNC server
   yum:
     name: tigervnc-server
-    state: present
-  become: yes
-- name: copy configuration file
+  become: true
+
+- name: Create user
+  user:
+    name: "{{ user }}"
+  become: true
+
+- name: Copy configuration file
   copy:
-    src: /usr/lib/systemd/system/vncserver@.service
     dest: /etc/systemd/system/vncserver-{{ user }}@.service
-    remote_src: yes
-    force: no
-  become: yes
-- name: configure ExecStart
+    force: false
+    src: /usr/lib/systemd/system/vncserver@.service
+    remote_src: true
+  become: true
+
+- name: Configure ExecStart
   lineinfile:
+    line: ExecStart=/usr/sbin/runuser -l {{ user }} -c "/usr/bin/vncserver %i"
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^ExecStart=
-    line: ExecStart=/usr/sbin/runuser -l {{ user }} -c "/usr/bin/vncserver %i"
-  notify: restart VNC service
-  become: yes
-- name: configure PIDFile
+  notify: Restart VNC service
+  become: true
+
+- name: Configure PIDFile
   lineinfile:
+    line: PIDFile=/home/{{ user }}/.vnc/%H%i.pid
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^PIDFile=
-    line: PIDFile=/home/{{ user }}/.vnc/%H%i.pid
-  notify: restart VNC service
-  become: yes
-- name: remove service user directive which sometimes seems to be present
+  notify: Restart VNC service
+  become: true
+
+- name: Remove service user directive which sometimes seems to be present
   lineinfile:
     path: /etc/systemd/system/vncserver-{{ user }}@.service
-    state: absent
     regexp: ^User=
-  notify: restart VNC service
-  become: yes
-- name: check if VNC password is already set
+    state: absent
+  notify: Restart VNC service
+  become: true
+
+- name: Check if VNC password is already set
   stat:
     path: /home/{{ user }}/.vnc/passwd
+  become: true
   register: vnc_passwd_file
-  become: yes
-- name: create .vnc directory
+
+- name: Create .vnc directory
   file:
-    path: /home/{{ user }}/.vnc
-    state: directory
-    owner: "{{ user }}"
     group: "{{ user }}"
     mode: 0755
-  when: not vnc_passwd_file.stat.exists
-  become: yes
-- name: set default VNC password
-  shell: echo {{ password }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
-  when: not vnc_passwd_file.stat.exists
-  become: yes
-- name: set correct permissions for VNC passwd file
-  file:
-    path: /home/{{ user }}/.vnc/passwd
     owner: "{{ user }}"
+    path: /home/{{ user }}/.vnc
+    state: directory
+  become: true
+  when: not vnc_passwd_file.stat.exists
+
+- name: Set default VNC password
+  shell: echo {{ password }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
+  become: true
+  when: not vnc_passwd_file.stat.exists
+
+- name: Set correct permissions for VNC passwd file
+  file:
     group: "{{ user }}"
     mode: 0600
+    owner: "{{ user }}"
+    path: /home/{{ user }}/.vnc/passwd
+  become: true
   when: not vnc_passwd_file.stat.exists
-  become: yes
-- name: start and enable VNC service
+
+- name: Start and enable VNC service
+  tags: notest
   systemd:
+    daemon_reload: true
+    enabled: true
     name: vncserver-{{ user }}@{{ display }}
-    daemon_reload: yes
     state: started
-    enabled: yes
-  become: yes
-- name: start GNOME 3 (not classic) session by default
+  become: true
+
+- name: Start GNOME 3 (not classic) session by default
+  tags: notest
   lineinfile:
-    path: /home/{{ user }}/.vnc/xstartup
-    regexp: ^exec 
     line: exec gnome-session
-  notify: restart VNC service
-  become: yes
-- name: check if autostart file exists
+    path: /home/{{ user }}/.vnc/xstartup
+    regexp: "^exec "  # Quotes emphasis space at the end
+  become: true
+  notify: Restart VNC service
+
+- name: Check if autostart file exists
   stat:
     path: /etc/xdg/autostart/gnome-software-service.desktop
   register: autostart_file
-- name: 'fix popup: "Authentication is required to set the network proxy used for downloading packages"'
+
+- name: >-
+    "Fix popup: Authentication is required to set the network proxy used for
+    downloading packages"
   lineinfile:
-    path: /etc/xdg/autostart/gnome-software-service.desktop
     line: X-GNOME-Autostart-enabled=false
-  notify: restart VNC service
+    path: /etc/xdg/autostart/gnome-software-service.desktop
+  become: true
+  notify: Restart VNC service
   when: autostart_file.stat.exists
-  become: yes

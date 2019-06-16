@@ -1,6 +1,7 @@
 ---
-- name: restart VNC service
+- name: Restart VNC service
   service:
-    name: vncserver-{{ user}}@{{display}}
+    name: vncserver-{{ user }}@{{ display }}
     state: restarted
-  become: yes
+  become: true
+  when: notest is not defined
