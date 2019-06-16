@@ -13,8 +13,8 @@
   copy:
     dest: /etc/systemd/system/vncserver-{{ user }}@.service
     force: false
-    src: /usr/lib/systemd/system/vncserver@.service
     remote_src: true
+    src: /usr/lib/systemd/system/vncserver@.service
   become: true
 
 - name: Configure ExecStart
