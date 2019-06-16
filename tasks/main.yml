@@ -58,7 +58,9 @@
   when: not vnc_passwd_file.stat.exists
 
 - name: Set default VNC password
-  shell: echo {{ password }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
+  shell: |
+    set -o pipefail
+    echo {{ password }} | vncpasswd -f > /home/{{ user }}/.vnc/passwd
   become: true
   when: not vnc_passwd_file.stat.exists
 
