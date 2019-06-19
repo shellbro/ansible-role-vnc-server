@@ -11,7 +11,7 @@ before_install:
   - sudo apt-get -qq update
 
 install:
-  - pip install molecule==2.19
+  - pip install molecule==2.19 ansible==2.4.6
   - pip install docker
 
 script:
