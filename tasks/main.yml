@@ -4,7 +4,7 @@
     name: tigervnc-server
   become: true
 
-- name: Create user
+- name: Make sure user exists
   user:
     name: "{{ user }}"
   become: true
@@ -22,24 +22,24 @@
     line: ExecStart=/usr/sbin/runuser -l {{ user }} -c "/usr/bin/vncserver %i"
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^ExecStart=
-  notify: Restart VNC service
   become: true
+  notify: Restart VNC service
 
 - name: Configure PIDFile
   lineinfile:
     line: PIDFile=/home/{{ user }}/.vnc/%H%i.pid
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^PIDFile=
-  notify: Restart VNC service
   become: true
+  notify: Restart VNC service
 
 - name: Remove service user directive which sometimes seems to be present
   lineinfile:
     path: /etc/systemd/system/vncserver-{{ user }}@.service
     regexp: ^User=
     state: absent
-  notify: Restart VNC service
   become: true
+  notify: Restart VNC service
 
 - name: Check if VNC password is already set
   stat:
