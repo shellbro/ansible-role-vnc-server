@@ -1,4 +1,4 @@
-shellbro.vnc-server
+shellbro.vnc_server
 ===================
 
 [![Build Status](https://travis-ci.org/shellbro/ansible-role-vnc-server.svg?branch=master)](https://travis-ci.org/shellbro/ansible-role-vnc-server)
@@ -27,7 +27,7 @@ Example Playbook
 
     - hosts: servers
       roles:
-        - role: shellbro.vnc-server
+        - role: shellbro.vnc_server
           user: shellbro
           password: vncpassword
           display: :3
