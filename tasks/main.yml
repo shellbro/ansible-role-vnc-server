@@ -4,7 +4,7 @@
     name: tigervnc-server
   become: true
 
-- name: Make sure user exists
+- name: Make sure user account exists
   user:
     name: "{{ user }}"
   become: true
