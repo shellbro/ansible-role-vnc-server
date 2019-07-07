@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   author: Jakub Gorczyca
-  role_name: vnc-server
+  role_name: vnc_server
   description: Ansible role for setting up a VNC server on CentOS 7
 
   issue_tracker_url: https://github.com/shellbro/ansible-role-vnc-server/issues
