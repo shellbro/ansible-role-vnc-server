@@ -17,7 +17,7 @@ Role Variables
 
 * user - user to start a VNC server (required)
 * password - default VNC password (by default `password`)
-* display - display number (by default :2)
+* display - display number (by default `:2`)
 
 Dependencies
 ------------
