@@ -1,6 +1,7 @@
 ---
 - name: Restart VNC service
-  service:
+  systemd:
+    daemon_reload: true
     name: vncserver-{{ user }}@{{ display }}
     state: restarted
   become: true
