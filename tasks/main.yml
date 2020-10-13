@@ -17,19 +17,11 @@
     src: /usr/lib/systemd/system/vncserver@.service
   become: true
 
-- name: Configure ExecStart
-  lineinfile:
-    line: ExecStart=/usr/sbin/runuser -l {{ user }} -c "/usr/bin/vncserver %i"
+- name: Configure Service for {{ user }}
+  replace:
     path: /etc/systemd/system/vncserver-{{ user }}@.service
-    regexp: ^ExecStart=
-  become: true
-  notify: Restart VNC service
-
-- name: Configure PIDFile
-  lineinfile:
-    line: PIDFile=/home/{{ user }}/.vnc/%H%i.pid
-    path: /etc/systemd/system/vncserver-{{ user }}@.service
-    regexp: ^PIDFile=
+    regexp:  '<USER>'
+    replace: '{{ user }}'
   become: true
   notify: Restart VNC service
 
